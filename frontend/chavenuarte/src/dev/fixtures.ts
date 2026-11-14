@@ -1,0 +1,210 @@
+import type { DashboardSnapshot, Role, TeamMember } from '../types/domain';
+import { addMinutes, localNow } from '../services/date-time';
+import { unrestrictedRules } from '../services/rules';
+export function createDemoSnapshot(
+    now = new Date(),
+    role: Role = 'supervisor',
+): DashboardSnapshot {
+    const current = localNow(now);
+    const team: TeamMember[] = [
+        {
+            id: 1,
+            name: 'Alex Oliveira',
+            registration: 'DEMO-001',
+            photoUrl: null,
+            role: 'supervisor',
+            status: 'active',
+            suspendedUntil: null,
+            shift: 'Manhã e tarde',
+        },
+        {
+            id: 2,
+            name: 'Marina Costa',
+            registration: 'DEMO-002',
+            photoUrl: null,
+            role: 'admin',
+            status: 'active',
+            suspendedUntil: null,
+            shift: 'Manhã',
+        },
+        {
+            id: 3,
+            name: 'Joana Lima',
+            registration: 'DEMO-003',
+            photoUrl: null,
+            role: 'bolsista',
+            status: 'active',
+            suspendedUntil: null,
+            shift: 'Manhã',
+        },
+        {
+            id: 4,
+            name: 'Pedro Alves',
+            registration: 'DEMO-004',
+            photoUrl: null,
+            role: 'bolsista',
+            status: 'active',
+            suspendedUntil: null,
+            shift: 'Tarde',
+        },
+        {
+            id: 5,
+            name: 'Luiza Santos',
+            registration: 'DEMO-005',
+            photoUrl: null,
+            role: 'bolsista',
+            status: 'active',
+            suspendedUntil: null,
+            shift: 'Tarde',
+        },
+        {
+            id: 6,
+            name: 'Rafa Souza',
+            registration: 'DEMO-006',
+            photoUrl: null,
+            role: 'unauthorized',
+            status: 'revoked',
+            suspendedUntil: null,
+            shift: '—',
+        },
+    ];
+    const names = [
+        'Sala de música',
+        'Ateliê de artes visuais',
+        'Sala de dança',
+        'Estúdio de criação',
+        'Auditório',
+        'Sala de instrumentos',
+        'Acervo cultural',
+        'Sala multiuso',
+    ];
+    const spaces = names.map((name, index) => ({
+        id: index + 1,
+        name,
+        block: index === 4 || index === 7 ? 'Bloco central' : 'Bloco cultural',
+        room: index < 2 || index === 4 || index === 5 ? 'Térreo' : '1º andar',
+    }));
+    const reservations: DashboardSnapshot['reservations'] = [
+        {
+            id: 1,
+            keyId: 1,
+            operatorId: 3,
+            registration: 'DEMO-003',
+            startsAt: addMinutes(current, -90),
+            endsAt: addMinutes(current, 90),
+            status: 'checked_out',
+            purpose: 'Ensaio musical',
+            checkedOutAt: addMinutes(current, -90),
+            returnedAt: null,
+            borrower: 'Joana Lima',
+            notes: '',
+            returnNotes: '',
+        },
+        {
+            id: 2,
+            keyId: 3,
+            operatorId: 4,
+            registration: 'DEMO-004',
+            startsAt: addMinutes(current, -120),
+            endsAt: addMinutes(current, -20),
+            status: 'checked_out',
+            purpose: 'Ensaio de dança',
+            checkedOutAt: addMinutes(current, -120),
+            returnedAt: null,
+            borrower: 'Pedro Alves',
+            notes: '',
+            returnNotes: '',
+        },
+        {
+            id: 3,
+            keyId: 2,
+            operatorId: 5,
+            registration: 'DEMO-005',
+            startsAt: addMinutes(current, -180),
+            endsAt: addMinutes(current, -60),
+            status: 'returned',
+            purpose: 'Oficina de desenho',
+            checkedOutAt: addMinutes(current, -180),
+            returnedAt: addMinutes(current, -70),
+            borrower: 'Luiza Santos',
+            notes: '',
+            returnNotes: 'Chave conferida.',
+        },
+        {
+            id: 4,
+            keyId: 5,
+            operatorId: 3,
+            registration: 'DEMO-003',
+            startsAt: addMinutes(current, -240),
+            endsAt: addMinutes(current, -180),
+            status: 'returned',
+            purpose: 'Encontro de projetos',
+            checkedOutAt: addMinutes(current, -240),
+            returnedAt: addMinutes(current, -180),
+            borrower: 'Joana Lima',
+            notes: '',
+            returnNotes: '',
+        },
+        {
+            id: 5,
+            keyId: 2,
+            operatorId: 3,
+            registration: 'DEMO-003',
+            startsAt: `${addMinutes(current, 1440).slice(0, 10)}T16:00`,
+            endsAt: `${addMinutes(current, 1440).slice(0, 10)}T18:00`,
+            status: 'approved',
+            purpose: 'Oficina de pintura',
+            checkedOutAt: null,
+            returnedAt: null,
+            borrower: 'Joana Lima',
+            notes: '',
+            returnNotes: '',
+        },
+    ];
+    const movements: DashboardSnapshot['movements'] = [];
+    for (const reservation of reservations) {
+        if (reservation.checkedOutAt)
+            movements.push({
+                id: movements.length + 1,
+                keyId: reservation.keyId,
+                reservationId: reservation.id,
+                kind: 'withdrawal',
+                occurredAt: reservation.checkedOutAt,
+                responsible: reservation.borrower,
+            });
+        if (reservation.returnedAt)
+            movements.push({
+                id: movements.length + 1,
+                keyId: reservation.keyId,
+                reservationId: reservation.id,
+                kind: 'return',
+                occurredAt: reservation.returnedAt,
+                responsible: reservation.borrower,
+            });
+    }
+    return {
+        referenceDate: current,
+        currentUser: structuredClone(
+            team.find((member) => member.role === role)!,
+        ),
+        spaces,
+        keys: names.map((name, index) => ({
+            id: index + 1,
+            code: `CH-0${index + 1}`,
+            name,
+            description: `Chave de acesso: ${name.toLocaleLowerCase('pt-BR')}.`,
+            active: index !== 7,
+            spaceId: index + 1,
+            rules: unrestrictedRules(),
+            block: null,
+        })),
+        reservations,
+        movements: movements.sort((a, b) =>
+            b.occurredAt.localeCompare(a.occurredAt),
+        ),
+        team,
+        globalRules: unrestrictedRules(),
+        pendingChange: null,
+    };
+}
+export const demoSnapshot = createDemoSnapshot();

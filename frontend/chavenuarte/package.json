@@ -1,0 +1,44 @@
+{
+    "name": "chavenuarte-v2-frontend",
+    "version": "0.1.0",
+    "private": true,
+    "type": "module",
+    "engines": {
+        "node": ">=22.12.0 <23",
+        "npm": ">=9"
+    },
+    "scripts": {
+        "dev": "vite --host 127.0.0.1",
+        "typecheck": "tsc --noEmit",
+        "test": "vitest run",
+        "build": "npm run typecheck && node scripts/build.mjs",
+        "verify:build": "node scripts/verify-build.mjs",
+        "preview": "vite preview --host 127.0.0.1",
+        "test:browser": "playwright test",
+        "build:demo": "npm run typecheck && node scripts/build-demo.mjs",
+        "preview:demo": "vite preview --mode demo --host 127.0.0.1 --port 4175 --strictPort"
+    },
+    "dependencies": {
+        "react": "19.2.0",
+        "react-dom": "19.2.0"
+    },
+    "overrides": {
+        "vite": "$vite",
+        "vitest": "$vitest"
+    },
+    "devDependencies": {
+        "@axe-core/playwright": "4.11.1",
+        "@playwright/test": "1.56.1",
+        "@testing-library/jest-dom": "6.9.1",
+        "@testing-library/react": "16.3.0",
+        "@testing-library/user-event": "14.6.1",
+        "@types/node": "22.19.0",
+        "@types/react": "19.2.2",
+        "@types/react-dom": "19.2.2",
+        "@vitejs/plugin-react": "5.1.0",
+        "jsdom": "27.1.0",
+        "typescript": "5.9.3",
+        "vite": "7.3.8",
+        "vitest": "4.1.12"
+    }
+}
