@@ -29,28 +29,29 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function (): v
         ->names('events');
 });
 
-$legacyPages = [
-    'a_cicuta' => 'a_cicuta',
-    'about' => 'about',
-    'andaluz' => 'andaluz',
-    'artevivencias' => 'artevivencias',
-    'banda_descendentes' => 'banda_descendentes',
-    'banda_sn' => 'banda_sn',
-    'clube_de_escrita' => 'clube_de_escrita',
-    'clube_do_livro' => 'clube_do_livro',
-    'flauteando' => 'flauteando',
-    'nuav' => 'nuav',
-    'passocompasso' => 'passocompasso',
-    'rabisco' => 'rabisco',
-    'thank_you' => 'thank_you',
+$institutionalPages = [
+    'about' => '/sobre',
+    'artevivencias' => '/artevivencias',
+    'a_cicuta' => '/projetos/a-cicuta',
+    'andaluz' => '/projetos/andaluz',
+    'banda_descendentes' => '/projetos/banda-descendentes',
+    'banda_sn' => '/projetos/banda-sn',
+    'clube_de_escrita' => '/projetos/clube-de-escrita',
+    'clube_do_livro' => '/projetos/clube-do-livro',
+    'flauteando' => '/projetos/flauteando',
+    'nuav' => '/projetos/nuav',
+    'passocompasso' => '/projetos/passocompasso',
+    'rabisco' => '/projetos/rabisco',
+    'thank_you' => '/mensagem-enviada',
 ];
 
-foreach ($legacyPages as $path => $view) {
-    Route::view("/{$path}.html", "pages.{$view}");
+foreach ($institutionalPages as $name => $path) {
+    Route::view($path, "pages.{$name}")->name($name);
+    Route::redirect("/{$name}.html", $path, 302);
 }
 
-Route::redirect('/index.html', '/');
-Route::redirect('/eventos.php', '/eventos');
-Route::redirect('/eventos2.php', '/admin/eventos');
-Route::redirect('/login.php', '/login');
-Route::redirect('/listar_evento.php', '/eventos/feed');
+Route::redirect('/index.html', '/', 302);
+Route::redirect('/eventos.php', '/eventos', 302);
+Route::redirect('/eventos2.php', '/admin/eventos', 302);
+Route::redirect('/login.php', '/login', 302);
+Route::redirect('/listar_evento.php', '/eventos/feed', 302);
