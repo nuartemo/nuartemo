@@ -6,7 +6,9 @@ auth.json
 .cache
 .config
 .claude
-node_modules
+**/node_modules
+frontend/chavenuarte/dist
+frontend/chavenuarte/dist-demo
 vendor
 bootstrap/cache/*.php
 storage/*.key
@@ -19,5 +21,10 @@ storage/framework/views/*
 storage/logs/*
 database/*.sqlite*
 public/hot
+public/chavenuarte-v2
 legacy
 tests
+frontend/chavenuarte/test-results/
+frontend/chavenuarte/visual-comparison/
+frontend/chavenuarte/playwright-report/
+frontend/chavenuarte/coverage/
