@@ -2,7 +2,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// This project never loads Laravel environment files or writes into public/.
+// Separate outputs; never loads Laravel environment files or the root Vite config.
 export default defineConfig(({ command, mode }) => ({
     root: fileURLToPath(new URL('.', import.meta.url)),
     envDir: false,
@@ -36,6 +36,23 @@ export default defineConfig(({ command, mode }) => ({
             },
         },
     ],
+    css: {
+        postcss: {
+            plugins: [{
+                postcssPlugin: 'chavenuarte-style-isolation',
+                Rule(rule) {
+                    if (rule.selector.includes(':where(.chavenuarte-v2)')) return;
+                    if (rule.parent?.type === 'atrule' && /keyframes$/i.test(rule.parent.name)) return;
+                    // :where keeps the approved cascade and specificity intact.
+                    rule.selectors = rule.selectors.map((selector) =>
+                        selector.startsWith(':root')
+                            ? selector.replace(':root', ':root:where(.chavenuarte-v2)')
+                            : `:where(.chavenuarte-v2) ${selector}`,
+                    );
+                },
+            }],
+        },
+    },
     server: {
         port: 5174,
         strictPort: true,
@@ -50,5 +67,6 @@ export default defineConfig(({ command, mode }) => ({
         emptyOutDir: true,
         manifest: true,
         sourcemap: false,
+        assetsInlineLimit: 0,
     },
 }));

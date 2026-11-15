@@ -103,11 +103,11 @@ test('identidade, breadcrumb, sidebar e disponibilidade nos dois temas', async (
     expect(asset).toContain('chavenuarte-key.svg');
     await expect(page.locator('.brand use')).toHaveAttribute(
         'href',
-        './chavenuarte-key.svg#chavenuarte-key',
+        /chavenuarte-key.*\.svg#chavenuarte-key$/,
     );
     await expect(page.locator('.stat-neutral .stat-icon use')).toHaveAttribute(
         'href',
-        './chavenuarte-key.svg#chavenuarte-key',
+        /chavenuarte-key.*\.svg#chavenuarte-key$/,
     );
     await expect(page.locator('.key-icon use')).toHaveCount(4);
     await expect(page.locator('.brand-mark')).toHaveCSS(

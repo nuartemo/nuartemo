@@ -27,12 +27,14 @@ const preferenceKey = 'chavenuarte.sidebar.compact';
 export function Layout({
     role,
     user,
+    suapIdentifier = null,
     view,
     navigate,
     children,
 }: {
-    role: Role;
-    user: TeamMember;
+    role: Role | null;
+    user: TeamMember | null;
+    suapIdentifier?: string | null;
     view: View;
     navigate: (view: View) => void;
     children: ReactNode;
@@ -53,12 +55,17 @@ export function Layout({
         }
     }, [view]);
     const managementActive = ['team', 'settings', 'management'].includes(view);
+    // A null identity exposes navigation to unavailable-data screens only.
+    // It never grants an operation or supplies a role to Dashboard/KeyService.
+    const visibleNavigation = navigation.filter(
+        (item) => role === null || can(role, item.permission),
+    );
+    const showSettings = visibleNavigation.some((item) => item.view === 'settings');
     const mobileItems = [
-        ...navigation
-            .slice(0, 3)
-            .filter((item) => can(role, item.permission))
+        ...visibleNavigation
+            .filter((item) => ['overview', 'keys', 'movements'].includes(item.view))
             .map((item) => ({ view: item.view, label: item.label })),
-        ...(can(role, 'manageTeam')
+        ...(visibleNavigation.some((item) => item.view === 'team')
             ? [{ view: 'management' as const, label: 'Gestão' }]
             : []),
     ];
@@ -122,10 +129,14 @@ export function Layout({
                 <div className="header-actions">
                     <ThemeToggle />
                     <div className="profile">
-                        <UserAvatar user={user} />
+                        {user ? <UserAvatar user={user} /> : (
+                            <span className="avatar" role="img" aria-label={suapIdentifier ? 'Nome e foto não informados' : 'Identidade indisponível'}>
+                                <Icon name="team" />
+                            </span>
+                        )}
                         <div className="profile-details">
-                            <strong>{user.name}</strong>
-                            <span>{roleLabels[role]}</span>
+                            <strong>{user?.name ?? (suapIdentifier ? 'Identificação SUAP' : 'Identidade indisponível')}</strong>
+                            <span>{role === null ? (suapIdentifier ?? 'Cargo não informado') : roleLabels[role]}</span>
                         </div>
                     </div>
                 </div>
@@ -137,20 +148,19 @@ export function Layout({
             >
                 <span className="sidebar-label">Área de trabalho</span>
                 <nav aria-label="Navegação principal">
-                    {navigation
+                    {visibleNavigation
                         .filter(
                             (item) =>
-                                item.view !== 'settings' &&
-                                can(role, item.permission),
+                                item.view !== 'settings',
                         )
                         .map(navItem)}
                 </nav>
-                {can(role, 'manageSettings') && (
+                {showSettings && (
                     <nav
                         className="sidebar-footer"
                         aria-label="Navegação administrativa"
                     >
-                        {navigation
+                        {visibleNavigation
                             .filter((item) => item.view === 'settings')
                             .map(navItem)}
                     </nav>
