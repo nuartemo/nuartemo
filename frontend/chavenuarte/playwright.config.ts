@@ -15,6 +15,11 @@ export default defineConfig({
     },
     timeout: 60_000,
     projects: [
+        {
+            name: 'laravel',
+            testMatch: 'laravel.spec.ts',
+            use: { baseURL: 'http://127.0.0.1:4176', viewport: { width: 1440, height: 900 } },
+        },
         ...[
             { name: 'desktop', width: 1440, height: 1050 },
             { name: 'desktop-1024', width: 1024, height: 900 },
@@ -50,6 +55,7 @@ export default defineConfig({
         },
     ],
     webServer: [
+        { command: 'npm run preview:laravel', url: 'http://127.0.0.1:4176/painel-chaves', reuseExistingServer: false, timeout: 30000 },
         {
             command: 'npm run preview:demo',
             url: 'http://127.0.0.1:4175',

@@ -1,3 +1,11 @@
+FROM node:22-alpine AS frontend
+
+WORKDIR /app
+COPY frontend/chavenuarte/package.json frontend/chavenuarte/package-lock.json ./frontend/chavenuarte/
+RUN npm --prefix frontend/chavenuarte ci --ignore-scripts
+COPY frontend/chavenuarte ./frontend/chavenuarte
+RUN npm --prefix frontend/chavenuarte run build:laravel
+
 FROM php:8.5-apache AS runtime
 
 RUN docker-php-ext-install pdo_mysql \
@@ -26,6 +34,7 @@ RUN sed -ri 's!DocumentRoot /var/www/html!DocumentRoot /var/www/html/public!' /e
 
 WORKDIR /var/www/html
 COPY --from=vendor /app /var/www/html
+COPY --from=frontend /app/public/chavenuarte-v2/ /var/www/html/public/chavenuarte-v2/
 COPY docker/entrypoint.sh /usr/local/bin/nuartemo-entrypoint
 
 RUN chmod +x /usr/local/bin/nuartemo-entrypoint \

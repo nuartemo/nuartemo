@@ -1,7 +1,9 @@
+import { keySymbolUrl, panelHomeUrl } from '../panel-assets';
+
 export function Brand({ onNavigate }: { onNavigate?: () => void }) {
     return (
         <a
-            href="./"
+            href={panelHomeUrl()}
             className="brand"
             aria-label="ChaveNUARTE — Visão geral"
             onClick={(event) => {
@@ -13,7 +15,7 @@ export function Brand({ onNavigate }: { onNavigate?: () => void }) {
         >
             <span className="brand-mark" aria-hidden="true">
                 <svg viewBox="0 0 24 24">
-                    <use href="./chavenuarte-key.svg#chavenuarte-key" />
+                    <use href={`${keySymbolUrl}#chavenuarte-key`} />
                 </svg>
             </span>
             <span className="brand-name">

@@ -673,7 +673,7 @@ small {
     font: inherit;
 }
 .page-body {
-    animation: enter 0.16s ease both;
+    animation: chavenuarte-enter 0.16s ease both;
 }
 .catalog-toolbar {
     display: flex;
@@ -1197,7 +1197,7 @@ fieldset label {
     height: 24px;
     border-radius: 4px;
     background: var(--brand);
-    animation: breathe 0.9s ease-in-out infinite;
+    animation: chavenuarte-breathe 0.9s ease-in-out infinite;
 }
 .loading-bars span:nth-child(2) {
     animation-delay: 0.12s;
@@ -1361,7 +1361,7 @@ body:has(.pending-notice) .dev-tools {
 .production-shell .topbar {
     justify-content: flex-start;
 }
-@keyframes enter {
+@keyframes chavenuarte-enter {
     from {
         transform: translateY(3px);
     }
@@ -1369,7 +1369,7 @@ body:has(.pending-notice) .dev-tools {
         transform: translateY(0);
     }
 }
-@keyframes breathe {
+@keyframes chavenuarte-breathe {
     0%,
     100% {
         opacity: 0.45;
@@ -1935,9 +1935,9 @@ body:has(.pending-notice) .dev-tools {
 }
 
 /* V2.1: shared identity, institutional navigation and theme controls. */
-.theme-applying *,
-.theme-applying *::before,
-.theme-applying *::after {
+:root.theme-applying *,
+:root.theme-applying *::before,
+:root.theme-applying *::after {
     transition: none !important;
 }
 .app-shell {
@@ -2047,7 +2047,7 @@ body:has(.pending-notice) .dev-tools {
     color: var(--text-muted);
 }
 .theme-toggle .icon {
-    animation: theme-icon-settle 0.16s ease;
+    animation: chavenuarte-theme-icon-settle 0.16s ease;
 }
 .breadcrumb {
     min-width: 0;
@@ -2152,7 +2152,7 @@ textarea:disabled {
 .spaces-summary {
     display: none;
 }
-@keyframes theme-icon-settle {
+@keyframes chavenuarte-theme-icon-settle {
     from {
         transform: rotate(-18deg);
     }

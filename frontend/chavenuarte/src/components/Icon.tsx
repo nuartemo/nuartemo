@@ -1,3 +1,5 @@
+import { keySymbolUrl } from '../panel-assets';
+
 export type IconName =
     | 'overview'
     | 'brandKey'
@@ -74,7 +76,7 @@ export function Icon({
             aria-hidden="true"
         >
             {name === 'brandKey' || name === 'keys' ? (
-                <use href="./chavenuarte-key.svg#chavenuarte-key" />
+                <use href={`${keySymbolUrl}#chavenuarte-key`} />
             ) : (
                 <path d={paths[name]} />
             )}

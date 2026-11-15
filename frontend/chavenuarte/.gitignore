@@ -6,3 +6,5 @@
 *.tsbuildinfo
 
 /dist-demo/
+
+/visual-comparison/

@@ -16,7 +16,12 @@
         "preview": "vite preview --host 127.0.0.1",
         "test:browser": "playwright test",
         "build:demo": "npm run typecheck && node scripts/build-demo.mjs",
-        "preview:demo": "vite preview --mode demo --host 127.0.0.1 --port 4175 --strictPort"
+        "preview:demo": "vite preview --mode demo --host 127.0.0.1 --port 4175 --strictPort",
+        "build:laravel": "npm run typecheck && node scripts/build-laravel.mjs",
+        "verify:laravel": "node scripts/verify-laravel.mjs",
+        "verify:blade": "php scripts/verify-blade.php",
+        "preview:laravel": "node scripts/preview-laravel.mjs",
+        "test:visual:compare": "node scripts/compare-visual.mjs"
     },
     "dependencies": {
         "react": "19.2.0",

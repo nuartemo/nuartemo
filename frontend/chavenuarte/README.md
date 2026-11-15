@@ -1,6 +1,6 @@
 # ChaveNUARTE V2 — Frontend
 
-Fundação React + TypeScript da Fase 1, refinada na Fase 2 com retirada, agendamento, devolução e gestão administrativa em memória. A arquitetura permanece isolada do Laravel: mesmos pontos de entrada, matriz de permissões, serviço substituível e componentes compartilhados.
+Fundação React + TypeScript da Fase 1, refinada na Fase 2 com retirada, agendamento, devolução e gestão administrativa em memória. A prévia demonstrativa permanece isolada. A adaptação institucional para Blade, o inventário de contratos, a substituição da entrada e o rollback estão em [LARAVEL.md](LARAVEL.md).
 
 ## Prévia local
 
@@ -72,9 +72,9 @@ npm --prefix frontend/chavenuarte run build
 npm --prefix frontend/chavenuarte run test:browser
 ```
 
-Playwright usa o Chrome local em `/usr/bin/google-chrome`; ajuste `CHAVENUARTE_CHROME_PATH` se necessário. Os testes abrem e encerram seus servidores locais nas portas 5174, 4174 e 4175. Capturas e rastros ficam em `test-results/`, ignorados pelo Git. Os testes de cinco segundos usam relógio simulado.
+Playwright usa o Chrome local em `/usr/bin/google-chrome`; ajuste `CHAVENUARTE_CHROME_PATH` se necessário. Os testes abrem e encerram seus servidores locais nas portas 5174, 4174, 4175 e 4176. Capturas e rastros ficam em `test-results/`, ignorados pelo Git. Os testes de cinco segundos usam relógio simulado.
 
-O build fixa o runtime de produção e escreve somente em `frontend/chavenuarte/dist/`, com manifesto próprio e caminhos relativos. `envDir: false` impede o carregamento de arquivos de ambiente. O Vite do Laravel, o bundle legado e `/painel-chaves` permanecem preservados.
+O build fixa o runtime de produção e escreve somente em `frontend/chavenuarte/dist/`, com manifesto próprio e caminhos relativos. `envDir: false` impede o carregamento de arquivos de ambiente. O Vite raiz do Laravel e os bundles legados permanecem preservados. A view de `/painel-chaves` foi substituída pela V2.1, mantendo o fluxo SUAP existente. O novo comando `build:laravel` gera somente `public/chavenuarte-v2/`, separado dos builds abaixo.
 
 ```sh
 npm --prefix frontend/chavenuarte run preview
@@ -86,7 +86,7 @@ A prévia do build usa a porta **4174** e mostra **Aguardando integração insti
 
 Todas as operações descritas são demonstrativas. Não há persistência, autenticação SUAP, autorização backend ou integração com a agenda institucional. A autorização e as validações precisam ser reproduzidas de forma autoritativa pelo futuro backend; permissões visuais não oferecem essa garantia.
 
-O próximo bloco é homologar estes fluxos com bolsistas e supervisores e acordar os contratos da API, identidade, permissões, concorrência e auditoria antes de qualquer ativação institucional.
+O próximo bloco é homologar estes fluxos com bolsistas e supervisores e acordar os contratos da API, identidade, permissões, concorrência e auditoria para disponibilizar os dados e operações institucionais que ainda faltam.
 
 O registro [VALIDACAO.md](VALIDACAO.md) documenta historicamente a Fase 1.
 
@@ -110,3 +110,16 @@ npm --prefix frontend/chavenuarte run preview:demo
 A saída é `dist-demo/`, ignorada pelo Git, e o preview escuta na porta 4175. Esse artefato contém o seletor e os serviços simulados e não deve ser publicado como produção. O comando habitual `build` continua produzindo `dist/` bloqueado, com seu verificador de isolamento. A preferência visual de tema é permitida em produção; perfis, seletor e métodos demonstrativos continuam excluídos do JavaScript.
 
 O relatório [V2.1.md](V2.1.md) reúne os arquivos alterados, testes executados, capturas dos dois temas e limites da homologação visual.
+
+## Adaptação Laravel Blade
+
+```sh
+npm --prefix frontend/chavenuarte run build:laravel
+npm --prefix frontend/chavenuarte run verify:laravel
+npm --prefix frontend/chavenuarte run verify:blade
+npm --prefix frontend/chavenuarte run preview:laravel
+```
+
+A view ativa `resources/views/pages/key-panel.blade.php` carrega o manifesto do diretório exclusivo `public/chavenuarte-v2/`. Após o SUAP existente, `/painel-chaves` abre o Layout V2.1 com navegação, temas e áreas específicas para dados indisponíveis. A identificação SUAP já fornecida pela sessão é exibida; nome/cargo, totais, regras ou operações não são simulados. A cópia anterior está em `resources/views/pages/key-panel-legacy.blade.php` para rollback.
+
+A prévia na porta 4176 renderiza a mesma view ativa usando helpers simulados, sem servidor Laravel ou SUAP. Consulte [LARAVEL.md](LARAVEL.md) para contratos, dependências precisas, resultados e rollback. O build independente na porta 4174 permanece separado da entrada Laravel.

@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs';
 import { render, screen } from '@testing-library/react';
 import { expect, it } from 'vitest';
+import { keySymbolUrl } from '../panel-assets';
 import { Brand } from './Brand';
 it('compartilha a geometria da chave do cabeçalho legado com o favicon da V2', () => {
     const svg = readFileSync('public/chavenuarte-key.svg', 'utf8');
@@ -13,5 +14,5 @@ it('compartilha a geometria da chave do cabeçalho legado com o favicon da V2', 
         screen
             .getByRole('link', { name: 'ChaveNUARTE — Visão geral' })
             .querySelector('use'),
-    ).toHaveAttribute('href', './chavenuarte-key.svg#chavenuarte-key');
+    ).toHaveAttribute('href', `${keySymbolUrl}#chavenuarte-key`);
 });
